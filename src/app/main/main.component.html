@@ -1,0 +1,23 @@
+<main role="main" class="p-4">
+  
+  <div>
+    <div class="row">
+      <div class="col-md-4" *ngFor='let data of list'>
+        <div class="card mb-4">
+          <div class="card-header">
+            Featured {{data}}
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Special title {{data}} treatment</h5>
+            <p class="card-text">
+              Demo Content
+            </p>
+          </div>
+          <div class="card-footer text-muted">
+            2 days ago
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
