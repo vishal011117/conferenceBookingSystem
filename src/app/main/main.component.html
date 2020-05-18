@@ -1,7 +1,9 @@
+<app-header></app-header>
+
 <main role="main" class="p-4">
   <div class="text-right mb-3">
     <form [formGroup]="selectForm" class="form-inline align-items-lg-stretch flex-row-reverse">
-      <div class="form-group mr-3">
+      <div class="form-group mr-3" *ngIf="mainService.checkTypeUser()">
         <select formControlName="selected" class="form-control text-capitalize" (change)="filerList()">
           <option *ngFor="let option of type" [value]="option">
             {{option}}
@@ -20,22 +22,31 @@
       <div class="col-12 col-sm-4 p-2" *ngFor='let data of list; index as i'>
         <div class="card mb-1 p-2">
           <div class="row no-gutters">
-            <div class="col-sm-4">
+            <div class="col-sm-4 align-self-center text-center">
               <img src="assets/1.jpeg" class="card-img" alt="dummy-photo">
             </div>
             <div class="col-sm-8">
               <div class="card-body p-2">
                 <h5 class="card-title">
-                  {{data.ownerName}}
-                  <i class="fa fa-close text-danger pull-right" (click)="mainService.removeConferece(i)"></i>
+                  {{data.ownerName}} 
+                  <i
+                    class="fa fa-close text-danger pull-right"
+                    (click)="mainService.removeConferece(i)"
+                    *ngIf="mainService.checkTypeUser()"
+                  ></i>
+                  <br>
+                  <small style="font-size: 11px;"> Room No: {{data.roomNo}} </small>
                 </h5>
-                <p class="card-text">{{data.description}}</p>
                 <p class="card-text">
-                  <small class="text-muted">
-                    {{mainService.moment(data.date).format('DD-MMM-YYYY')}}
-                    {{data.duration}}
-                  </small>
+                  {{data.description}} 
                 </p>
+                <small class="text-muted">
+                  {{mainService.moment(data.date).format('DD-MMM-YYYY')}}
+                </small>
+                <small class="text-muted pull-right font-weight-bold" style="margin-top: 3px;">
+                  {{mainService.moment(data.startTime).format('hh:mm a')}} - 
+                  {{mainService.moment(data.endTime).format('hh:mm a')}}
+                </small>
               </div>
             </div>
           </div>
@@ -45,10 +56,10 @@
   </div>
 
   <ng-template #template let-modal>
-    <form [formGroup]="form" (ngSubmit)="modal.close('Save click')">
+    <form [formGroup]="form" (ngSubmit)="addConference()">
       <div class="modal-header">
         <h4 class="modal-title pull-left">New Conference</h4>
-        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <button type="button" class="close" aria-label="Close" (click)="closeModal()">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -59,8 +70,11 @@
         </div>
         <div class="form-group">
           <label class="col-form-label">Select Room:</label>
-          <input placeholder="Enter room name" type="text" formControlName="roomNo" class="form-control"
-            autocomplete="false">
+          <select formControlName="roomNo" class="form-control" (change)="filerList()">
+            <option *ngFor="let option of mainService.rooms" [value]="option">
+              {{option}}
+            </option>
+          </select>
         </div>
         <div class="form-group">
           <div class="input-group">
@@ -95,7 +109,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="closeModal()">Close</button>
         <button type="submit" class="btn btn-success">Submit</button>
       </div>
     </form>

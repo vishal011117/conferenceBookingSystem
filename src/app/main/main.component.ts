@@ -31,17 +31,21 @@ export class MainComponent implements OnInit {
       ownerName: [''],
       roomNo: [''],
       description: [''],
-      startTime: ['', (control: FormControl) => this.mainService.checkOfficalTime(control)],
-      endTime: ['', (control: FormControl) => this.mainService.checkOfficalTime(control)],
-      date: [{
-        "year": this.today.year(),
-        "month": this.today.month(),
-        "day": this.today.date()
-      }]
+      startTime: ['', (control: FormControl) => this.checkCondition(control)],
+      endTime: ['', (control: FormControl) => this.checkCondition(control)],
+      date: ['']
     })
   }
 
+  checkCondition(control, form = this.form) {
+    this.mainService.checkOfficalTime(control) && this.mainService.checkSlot(control, form)
+  }
+
   ngOnInit(): void {
+    this.loadData();
+  }
+
+  loadData() {
     this.list = this.mainService.loadData();
   }
 
@@ -49,25 +53,26 @@ export class MainComponent implements OnInit {
     this.form.reset()
   }
 
+  closeModal() {
+    this.resetForm();     
+    this.modal.close('Save click'); 
+  }
+
   addConference() {
-    this.mainService.add(this.form.value)
-    this.resetForm();
+    const data = this.mainService.add(this.form.value);
+
+    if (data) {
+      this.closeModal();
+      this.loadData();
+    }
   }
 
   openModal(template: TemplateRef<any>) {
-    this.modalService
-      .open(template)
-      .result
-      .then((result) => {
-        this.addConference()
-      }, (reason) => {
-        console.log(`dismiss with: ${reason}`);
-      })
+    this.modal = this.modalService.open(template)
   }
 
   setEndDate() {
     console.log('enter', this.form);
-    // this.form.value.startTime; 
     this.form.setValue({
       endTime: {
         hour: this.form.value.startTime.hour + 1,
@@ -77,6 +82,9 @@ export class MainComponent implements OnInit {
   }
 
   checkEndTime() {
+    console.log('enter', this.mainService.loginUser);
+    if (!this.mainService.checkTypeUser()) return true;
+    console.log('enter next');
     const { startTime, endTime, date: { year, month, day } } = this.form.value;
 
     if (!endTime) return true;
@@ -88,11 +96,11 @@ export class MainComponent implements OnInit {
     const maxEnd = start.clone().add(3, 'h');
 
     if (start === end) {
-      console.log('Start time and End time need different');
-    } else if (end.isBefore(start)) {
-      console.log('End time not less then start time');
+      alert('Enter Start time and End time different');
+    } else if (end.isSameOrBefore(start)) {
+      alert('Entering End time is not less then start time');
     } else if (end.isSameOrAfter(maxEnd)) {
-      console.log('End time not more then 3 hours');
+      alert('Booking slot not more then 3 hours');
     }
   }
 
@@ -106,8 +114,7 @@ export class MainComponent implements OnInit {
         this.list = futureData.sort((x, y) => this.mainService.moment(x.startTime) - this.mainService.moment(y.startTime));
         break;
       case 'past':
-        const pastData = data.filter(x => this.mainService.moment() > this.mainService.moment(x.startTime));
-        this.list = pastData.sort((x, y) => this.mainService.moment(x.startTime) - this.mainService.moment(y.startTime));
+        this.list = data.filter(x => this.mainService.moment() > this.mainService.moment(x.startTime));
         break;
       default:
         this.list = data
