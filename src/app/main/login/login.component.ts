@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MainService } from '../main.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +16,8 @@ export class LoginComponent implements OnInit {
   constructor(
     public mainService: MainService,
     public router: Router,
-    public formBuilder: FormBuilder
+    public formBuilder: FormBuilder,
+    public toastr: ToastrService,
   ) { }
 
   ngOnInit(): void {
@@ -33,6 +35,7 @@ export class LoginComponent implements OnInit {
 
     if (!this.loginStep) {
       this.mainService.newUser(data);
+      this.toastr.success("You are successfully registerd");
       this.form.reset();
 
       return (this.loginStep = !this.loginStep); 
@@ -44,7 +47,7 @@ export class LoginComponent implements OnInit {
       this.router.navigate(['main'])
       this.form.reset();
     } else {
-      alert('You are unregister user');
+      this.toastr.error("You are unregister user");
     }
   }
 }

@@ -2,6 +2,7 @@ import { Component, OnInit, TemplateRef } from '@angular/core';
 import { MainService } from './main.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-main',
@@ -20,6 +21,7 @@ export class MainComponent implements OnInit {
     public mainService: MainService,
     public modalService: NgbModal,
     public formBuilder: FormBuilder,
+    public toastr: ToastrService,
   ) {
     this.today = this.mainService.moment();
 
@@ -34,7 +36,7 @@ export class MainComponent implements OnInit {
       startTime: ['', (control: FormControl) => this.checkCondition(control)],
       endTime: ['', (control: FormControl) => this.checkCondition(control)],
       date: ['']
-    })
+    });
   }
 
   checkCondition(control, form = this.form) {
@@ -53,6 +55,12 @@ export class MainComponent implements OnInit {
     this.form.reset()
   }
 
+  removeSlot(index) {
+    this.mainService.removeConferece(index);
+    this.loadData();
+    this.toastr.error("You are Conference slot successfully remove");
+  }
+
   closeModal() {
     this.resetForm();     
     this.modal.close('Save click'); 
@@ -62,6 +70,7 @@ export class MainComponent implements OnInit {
     const data = this.mainService.add(this.form.value);
 
     if (data) {
+      this.toastr.success("You are Conference slot successfully registerd");
       this.closeModal();
       this.loadData();
     }

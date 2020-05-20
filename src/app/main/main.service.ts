@@ -16,10 +16,6 @@ export class MainService {
   rooms = new Array(5).fill(0).map((x, i) => i + 1);
   constructor() { }
 
-  remove(index) {
-    this.list.splice(index, 1);
-  }
-
   checkMaxSlot(slot) {
     return (slot >= 3);
   }
