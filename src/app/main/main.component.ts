@@ -72,7 +72,6 @@ export class MainComponent implements OnInit {
   }
 
   setEndDate() {
-    console.log('enter', this.form);
     this.form.setValue({
       endTime: {
         hour: this.form.value.startTime.hour + 1,
@@ -82,9 +81,8 @@ export class MainComponent implements OnInit {
   }
 
   checkEndTime() {
-    console.log('enter', this.mainService.loginUser);
     if (!this.mainService.checkTypeUser()) return true;
-    console.log('enter next');
+
     const { startTime, endTime, date: { year, month, day } } = this.form.value;
 
     if (!endTime) return true;

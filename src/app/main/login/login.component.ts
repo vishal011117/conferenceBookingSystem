@@ -31,8 +31,20 @@ export class LoginComponent implements OnInit {
       type: this.form.get('type').value,
     };
 
-    this.mainService.newUser(data);
-    this.router.navigate(['main'])
-    this.form.reset();
+    if (!this.loginStep) {
+      this.mainService.newUser(data);
+      this.form.reset();
+
+      return (this.loginStep = !this.loginStep); 
+    }
+
+    const isExistedUser = this.mainService.checkUser(data);
+
+    if (isExistedUser) {
+      this.router.navigate(['main'])
+      this.form.reset();
+    } else {
+      alert('You are unregister user');
+    }
   }
 }

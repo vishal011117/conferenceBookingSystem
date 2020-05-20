@@ -1,22 +1,26 @@
 /* You can add global styles to this file, and also import other style files */
 
 button {
-  &:focus {
-    outline: none !important;
-    box-shadow: none !important;
-  }
+ &:focus {
+  outline: none !important;
+  box-shadow: none !important;
+ }
 }
 
 * {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
+ padding: 0;
+ margin: 0;
+ box-sizing: border-box;
 }
 
 p {
-  margin: 0;
+ margin: 0;
 }
 
 body {
-  background: #f6f5f8;
+ background: #f6f5f8;
+}
+
+.pointer {
+ cursor: pointer;
 }
