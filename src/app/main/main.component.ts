@@ -103,11 +103,11 @@ export class MainComponent implements OnInit {
     const maxEnd = start.clone().add(3, 'h');
 
     if (start === end) {
-      alert('Enter Start time and End time different');
+      this.toastr.error('Enter Start time and End time different');
     } else if (end.isSameOrBefore(start)) {
-      alert('Entering End time is not less then start time');
+      this.toastr.error('Entering End time is not less then start time');
     } else if (end.isSameOrAfter(maxEnd)) {
-      alert('Booking slot not more then 3 hours');
+      this.toastr.error('Booking slot not more then 3 hours');
     }
   }
 

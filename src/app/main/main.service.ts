@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import * as moment from 'moment';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,10 @@ export class MainService {
 
   moment: any = moment;
   rooms = new Array(5).fill(0).map((x, i) => i + 1);
-  constructor() { }
+
+  constructor(
+    public toastr: ToastrService
+  ) { }
 
   checkMaxSlot(slot) {
     return (slot >= 3);
@@ -45,11 +49,9 @@ export class MainService {
   }
 
   loadData() {
-    if (this.checkTypeUser()) {
-      return this.list.filter(x => x.userId === this.loginUser.id);
-    } 
-
-    return this.list;
+    return this.checkTypeUser()
+      ? this.list.filter(x => x.userId === this.loginUser.id)
+      : this.list;
   }
 
   checkOfficalTime(control) {
@@ -57,7 +59,7 @@ export class MainService {
 
     if (!value) return null;
     else if (!(value.hour >= 9 && value.hour < 21)) {
-      alert('You need book between 9AM to 9PM');
+      this.toastr.error('You need book between 9AM to 9PM');
       return false
     }
 
@@ -73,13 +75,21 @@ export class MainService {
 
     let roomList  = this.getRoomSlot(value.roomNo);
 
-    const date = moment({ ...value.date, ...control.value}).format();
+    const date = moment({ 
+      ...value.date, 
+      month: value.date.month - 1, 
+      ...control.value
+    }).format();
     roomList = roomList.filter(x => 
       moment(date).isSame(x.startTime) 
       || moment(date).isSame(x.endTime) 
       || moment(date).isBetween(x.startTime, x.endTime));
 
-    if (roomList.length) alert('Already slot booked');
+    if (roomList.length) {
+      this.toastr.error('Already slot booked');
+    }
+
+    return true;
   }
 
   getIndex(date, time) {
@@ -103,7 +113,7 @@ export class MainService {
       startTime, endTime
     } = data;
 
-    const dateFormat = {year, month, date: day}
+    const dateFormat = { year, month: month - 1, date: day }
 
     const i = this.getIndex(dateFormat, startTime);
 
@@ -115,7 +125,7 @@ export class MainService {
       date: this.moment(dateFormat).format('yyyy-MM-DD'),
       startTime: moment({ ...dateFormat, hour: startTime.hour, minute: startTime.minute}).format(),
       endTime: moment({ ...dateFormat, hour: endTime.hour, minute: endTime.minute}).format(),
-      timestamp: this.moment(),
+      timestamp: this.moment().format(),
     };
 
     this.list.splice(i, 0, formatedData);

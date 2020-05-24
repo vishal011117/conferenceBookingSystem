@@ -1,112 +1,115 @@
 <app-header></app-header>
 
 <main role="main" class="p-4">
- <div class="text-right mb-3">
-  <form [formGroup]="selectForm" class="form-inline align-items-lg-stretch flex-row-reverse">
-   <div class="form-group mr-3" *ngIf="mainService.checkTypeUser()">
-    <select formControlName="selected" class="form-control text-capitalize" (change)="filerList()">
+  <div class="text-right mb-3">
+    <form [formGroup]="selectForm" class="form-inline align-items-lg-stretch flex-row-reverse">
+      <div class="form-group mr-3" *ngIf="mainService.checkTypeUser()">
+        <select formControlName="selected" class="form-control text-capitalize" (change)="filerList()">
           <option *ngFor="let option of type" [value]="option">
             {{option}}
           </option>
         </select>
-   </div>
+      </div>
 
-   <button class="btn btn-primary btn-sm" type="button" (click)="openModal(template)">
+      <button class="btn btn-primary btn-sm" type="button" (click)="openModal(template)">
         <i class="fa fa-plus mr-2"></i>
         Add Conference
       </button>
-  </form>
- </div>
- <div>
-  <div class="row no-gutters">
-   <div class="col-12 col-sm-4 p-2" *ngFor='let data of list; index as i'>
-    <div class="card mb-1 p-2">
-     <div class="row no-gutters">
-      <div class="col-sm-4 align-self-center text-center">
-       <img src="assets/1.jpeg" class="card-img" alt="dummy-photo">
-      </div>
-      <div class="col-sm-8">
-       <div class="card-body p-2">
-        <h5 class="card-title">
-         {{data.ownerName}}
-         <span *ngIf="mainService.checkTypeUser()" class=" pull-right" (click)="removeSlot(i)">
-            <i class="fa fa-close text-danger"            
-            ></i>
-          </span>
-         <br>
-         <small style="font-size: 11px;"> Room No: {{data.roomNo}} </small>
-        </h5>
-        <p class="card-text">
-         {{data.description}}
-        </p>
-        <small class="text-muted">
+    </form>
+  </div>
+  <div>
+    <div class="row no-gutters">
+      <div class="col-12 col-sm-4 p-2" *ngFor='let data of list; index as i'>
+        <div class="card mb-1 p-2">
+          <div class="row no-gutters">
+            <div class="col-sm-4 align-self-center text-center">
+              <img src="assets/1.jpeg" class="card-img" alt="dummy-photo">
+            </div>
+            <div class="col-sm-8">
+              <div class="card-body p-2">
+                <h5 class="card-title">
+                  {{data.ownerName}}
+                  <span *ngIf="mainService.checkTypeUser()" class=" pull-right" (click)="removeSlot(i)">
+                    <i class="fa fa-close text-danger"></i>
+                  </span>
+                  <br>
+                  <small style="font-size: 11px;"> Room No: {{data.roomNo}} </small>
+                </h5>
+                <p class="card-text">
+                  {{data.description}}
+                </p>
+                <small class="text-muted">
                   {{mainService.moment(data.date).format('DD-MMM-YYYY')}}
                 </small>
-        <small class="text-muted pull-right font-weight-bold" style="margin-top: 3px;">
-                  {{mainService.moment(data.startTime).format('hh:mm a')}} - 
+                <small class="text-muted pull-right font-weight-bold" style="margin-top: 3px;">
+                  {{mainService.moment(data.startTime).format('hh:mm a')}} -
                   {{mainService.moment(data.endTime).format('hh:mm a')}}
                 </small>
-       </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-     </div>
     </div>
-   </div>
   </div>
- </div>
 
- <ng-template #template let-modal>
-  <form [formGroup]="form" (ngSubmit)="addConference()">
-   <div class="modal-header">
-    <h4 class="modal-title pull-left">New Conference</h4>
-    <button type="button" class="close" aria-label="Close" (click)="closeModal()">
+  <ng-template #template let-modal>
+    <form [formGroup]="form" (ngSubmit)="addConference()">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">New Conference</h4>
+        <button type="button" class="close" aria-label="Close" (click)="closeModal()">
           <span aria-hidden="true">&times;</span>
         </button>
-   </div>
-   <div class="modal-body">
-    <div class="form-group">
-     <input placeholder="Enter your name" type="text" formControlName="ownerName" class="form-control" autocomplete="false">
-    </div>
-    <div class="form-group">
-     <label class="col-form-label">Select Room:</label>
-     <select formControlName="roomNo" class="form-control" (change)="filerList()">
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <input placeholder="Enter your name" type="text" formControlName="ownerName" class="form-control"
+            autocomplete="false">
+        </div>
+        <div class="form-group">
+          <label class="col-form-label">Select Room:</label>
+          <select formControlName="roomNo" class="form-control" (change)="filerList()">
             <option *ngFor="let option of mainService.rooms" [value]="option">
               {{option}}
             </option>
           </select>
-    </div>
-    <div class="form-group">
-     <div class="input-group">
-      <input class="form-control" placeholder="Enter Date" type="text" formControlName="date" ngbDatepicker #d="ngbDatepicker" name="date_start" autocomplete="false" />
-      <div class="input-group-append">
-       <button class="btn btn-outline-secondary" (click)="d.toggle()" type="button">
+        </div>
+        <div class="form-group">
+          <div class="input-group">
+            <input class="form-control" placeholder="Enter Date" type="text" formControlName="date" ngbDatepicker
+              #d="ngbDatepicker" name="date_start" autocomplete="false" />
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary" (click)="d.toggle()" type="button">
                 <i class="fa fa-calendar"></i>
               </button>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-group">
+              <ngb-timepicker formControlName="startTime" name="startTime" [spinners]="false"
+                (ngModalChange)="setEndDate()">
+              </ngb-timepicker>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group">
+              <ngb-timepicker formControlName="endTime" name="endTime" [spinners]="false"
+                (ngModelChange)="checkEndTime()">
+              </ngb-timepicker>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="message-text" class="col-form-label">Description:</label>
+          <textarea class="form-control" autocomplete="false" formControlName="description"></textarea>
+        </div>
       </div>
-     </div>
-    </div>
-    <div class="row">
-     <div class="col-sm-6">
-      <div class="form-group">
-       <ngb-timepicker formControlName="startTime" name="startTime" [spinners]="false" (ngModalChange)="setEndDate()">
-       </ngb-timepicker>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="closeModal()">Close</button>
+        <button type="submit" class="btn btn-success">Submit</button>
       </div>
-     </div>
-     <div class="col-sm-6">
-      <div class="form-group">
-       <ngb-timepicker formControlName="endTime" name="endTime" [spinners]="false" (ngModelChange)="checkEndTime()">
-       </ngb-timepicker>
-      </div>
-     </div>
-    </div>
-    <div class="form-group">
-     <label for="message-text" class="col-form-label">Description:</label>
-     <textarea class="form-control" autocomplete="false" formControlName="description"></textarea>
-    </div>
-   </div>
-   <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="closeModal()">Close</button>
-    <button type="submit" class="btn btn-success">Submit</button>
-   </div>
-  </form>
- </ng-template>
+    </form>
+  </ng-template>
 </main>
