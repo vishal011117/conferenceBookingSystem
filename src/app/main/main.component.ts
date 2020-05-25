@@ -1,8 +1,9 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { MainService } from './main.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
+import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-main',
@@ -22,6 +23,7 @@ export class MainComponent implements OnInit {
     public modalService: NgbModal,
     public formBuilder: FormBuilder,
     public toastr: ToastrService,
+    public router: Router,
   ) {
     this.today = this.mainService.moment();
 
@@ -30,17 +32,24 @@ export class MainComponent implements OnInit {
     });
 
     this.form = this.formBuilder.group({
-      ownerName: [''],
-      roomNo: [''],
-      description: [''],
-      startTime: ['', (control: FormControl) => this.checkCondition(control)],
+      ownerName: ['', Validators.required],
+      roomNo: ['', Validators.required],
+      description: ['', Validators.required],
+      startTime: ['', (control: FormControl) => this.setEndTime(control)],
       endTime: ['', (control: FormControl) => this.checkCondition(control)],
-      date: ['']
+      date: ['', Validators.required]
     });
   }
 
+  setEndTime(control) {
+    if (this.form) this.form.controls.endTime.setValue(undefined);
+    
+    this.mainService.checkOfficalTime(control);
+  }
+
   checkCondition(control, form = this.form) {
-    this.mainService.checkOfficalTime(control) && this.mainService.checkSlot(control, form)
+    return this.mainService.checkOfficalTime(control)
+      && this.checkEndTime(control);
   }
 
   ngOnInit(): void {
@@ -56,6 +65,8 @@ export class MainComponent implements OnInit {
   }
 
   removeSlot(index) {
+    console.log(index);
+    
     this.mainService.removeConferece(index);
     this.loadData();
     this.toastr.error("You are Conference slot successfully remove");
@@ -67,12 +78,27 @@ export class MainComponent implements OnInit {
   }
 
   addConference() {
-    const data = this.mainService.add(this.form.value);
+    const { value } = this.form;
 
-    if (data) {
-      this.toastr.success("You are Conference slot successfully registerd");
-      this.closeModal();
-      this.loadData();
+    console.log(value);
+    if (!value.startTime && !value.endTime) {
+       return this.toastr.error('Start and End Time are mandatory');
+    }
+    if (!this.form.valid) return this.toastr.error('All fields are mandatory');
+
+    const slot = this.mainService.checkSlot(value);
+    if (slot) {
+      const data = this.mainService.add(value);
+
+      if (data) {
+        this.toastr.success("You are Conference slot successfully registerd");
+        this.closeModal();
+        this.loadData();
+      }
+    } else {
+        this.form.controls.startTime.setValue(undefined);
+        this.form.controls.endTime.setValue(undefined);
+        this.toastr.error('Already slot booked');
     }
   }
 
@@ -80,21 +106,13 @@ export class MainComponent implements OnInit {
     this.modal = this.modalService.open(template)
   }
 
-  setEndDate() {
-    this.form.setValue({
-      endTime: {
-        hour: this.form.value.startTime.hour + 1,
-        minute: this.form.value.startTime.minute
-      },
-    });
-  }
-
-  checkEndTime() {
+  checkEndTime(control) {
     if (!this.mainService.checkTypeUser()) return true;
 
-    const { startTime, endTime, date: { year, month, day } } = this.form.value;
+    const endTime = control.value;
+    const { startTime, date: { year, month, day } } = this.form.value;
 
-    if (!endTime) return true;
+    if (!endTime) return false;
 
     let start = this.mainService.moment().clone();
     start.set({ year, month, date: day, hour: startTime.hour, minute: startTime.minute });
@@ -104,11 +122,16 @@ export class MainComponent implements OnInit {
 
     if (start === end) {
       this.toastr.error('Enter Start time and End time different');
+      return false;
     } else if (end.isSameOrBefore(start)) {
       this.toastr.error('Entering End time is not less then start time');
+      return false;
     } else if (end.isSameOrAfter(maxEnd)) {
       this.toastr.error('Booking slot not more then 3 hours');
+      return false;
     }
+
+    return true
   }
 
   filerList() {
@@ -126,5 +149,9 @@ export class MainComponent implements OnInit {
       default:
         this.list = data
     }
+  }
+
+  redirect(id) {
+    this.router.navigate(['/view', id ])
   }
 }

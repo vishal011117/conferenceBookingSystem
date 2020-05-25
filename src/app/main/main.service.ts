@@ -70,24 +70,30 @@ export class MainService {
     return this.list.filter(x => x.roomNo === number);
   }
 
-  checkSlot(control, data) {
-    const value = data.value;
+  checkSlot(data) {
+    const { date, startTime, endTime, roomNo } = data;
 
-    let roomList  = this.getRoomSlot(value.roomNo);
-
-    const date = moment({ 
-      ...value.date, 
-      month: value.date.month - 1, 
-      ...control.value
+    console.log(data);
+    let roomList  = this.getRoomSlot(roomNo);
+    const startDateTime = moment({
+      ...date,
+      month: date.month - 1,
+      ...startTime
+    }).format();    
+    const endDateTime = moment({ 
+      ...date,
+      month: date.month - 1, 
+      ...endTime
     }).format();
-    roomList = roomList.filter(x => 
-      moment(date).isSame(x.startTime) 
-      || moment(date).isSame(x.endTime) 
-      || moment(date).isBetween(x.startTime, x.endTime));
 
-    if (roomList.length) {
-      this.toastr.error('Already slot booked');
-    }
+    roomList = roomList.filter(x =>
+      ((moment(startDateTime).isSame(x.startTime) || moment(endDateTime).isSame(x.startTime))
+      || (moment(startDateTime).isSame(x.endTime) || moment(endDateTime).isSame(x.endTime))
+      || (moment(startDateTime).isBetween(x.startTime, x.endTime) || moment(endDateTime).isBetween(x.startTime, x.endTime))
+      || (moment(x.startTime).isBetween(startDateTime, endDateTime) || moment(x.endTime).isBetween(startDateTime, endDateTime))));
+
+      console.log(roomList);
+    if (roomList.length) return false;
 
     return true;
   }
@@ -122,6 +128,7 @@ export class MainService {
       ownerName,
       userId: this.loginUser.id,
       description,
+      id: this.list.length + 1,
       date: this.moment(dateFormat).format('yyyy-MM-DD'),
       startTime: moment({ ...dateFormat, hour: startTime.hour, minute: startTime.minute}).format(),
       endTime: moment({ ...dateFormat, hour: endTime.hour, minute: endTime.minute}).format(),
