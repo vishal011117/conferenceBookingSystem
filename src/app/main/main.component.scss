@@ -7,6 +7,12 @@ main {
     }
   }
 
+  .btn-sm {
+    &.btn-primary {
+      font-size: 1rem;
+    }
+  }
+
   .card {
     cursor       : pointer;
     max-width    : 540px;

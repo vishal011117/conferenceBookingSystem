@@ -17,6 +17,7 @@ export class MainComponent implements OnInit {
   today;
   modal;
   type = ['all', 'past', 'future'];
+  loading: boolean;
 
   constructor(
     public mainService: MainService,
@@ -57,17 +58,17 @@ export class MainComponent implements OnInit {
   }
 
   loadData() {
+    this.loading = true;
     this.list = this.mainService.loadData();
+    this.loading = false;
   }
 
   resetForm() {
     this.form.reset()
   }
 
-  removeSlot(index) {
-    console.log(index);
-    
-    this.mainService.removeConferece(index);
+  removeSlot(id) {  
+    this.mainService.removeConferece(id);
     this.loadData();
     this.toastr.error("You are Conference slot successfully remove");
   }
@@ -80,7 +81,6 @@ export class MainComponent implements OnInit {
   addConference() {
     const { value } = this.form;
 
-    console.log(value);
     if (!value.startTime && !value.endTime) {
        return this.toastr.error('Start and End Time are mandatory');
     }

@@ -11,10 +11,10 @@ export class HeaderComponent implements OnInit {
     public router: Router,
   ) { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void { }
 
   logout() {
+    localStorage.removeItem('user');
     this.router.navigate(['login']);
   }
 }

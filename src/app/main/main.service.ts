@@ -18,14 +18,27 @@ export class MainService {
 
   constructor(
     public toastr: ToastrService
-  ) { }
+  ) {
+    this.loginUser = this.getFromlocalStorage('user');
+    this.users = this.getFromlocalStorage('users');
+    this.list = this.getFromlocalStorage('list');
+  }
+
+  getFromlocalStorage(key)  {
+    return JSON.parse(localStorage.getItem(key)) || [];
+  }
+
+  setLocalStorage(key: string, data: any) {
+    return localStorage.setItem(key, JSON.stringify(data));
+  }
 
   checkMaxSlot(slot) {
     return (slot >= 3);
   }
 
-  removeConferece(index) {
-    this.list.splice(index, 1);
+  removeConferece(id) {
+    this.list = this.list.filter(x => x.id !== id);
+    this.setLocalStorage('list', this.list);
   }
 
   checkTypeUser() {
@@ -36,7 +49,10 @@ export class MainService {
     const { name, type } = data;
     const existedUser = this.users.find(x => (x.name === name && x.type === type));
 
-    if (existedUser) return (this.loginUser = existedUser);
+    if (existedUser) {
+      this.setLocalStorage('user', existedUser);
+      this.loginUser = existedUser
+    };
 
     return !!existedUser;
   }
@@ -45,10 +61,14 @@ export class MainService {
     this.users = this.users.concat({
       ...data,
       id: (this.users.length || 0) + 1,
-    }); 
+    });
+
+    this.setLocalStorage('users', this.users);
   }
 
   loadData() {
+    this.list = this.getFromlocalStorage('list');
+    
     return this.checkTypeUser()
       ? this.list.filter(x => x.userId === this.loginUser.id)
       : this.list;
@@ -73,7 +93,6 @@ export class MainService {
   checkSlot(data) {
     const { date, startTime, endTime, roomNo } = data;
 
-    console.log(data);
     let roomList  = this.getRoomSlot(roomNo);
     const startDateTime = moment({
       ...date,
@@ -92,7 +111,6 @@ export class MainService {
       || (moment(startDateTime).isBetween(x.startTime, x.endTime) || moment(endDateTime).isBetween(x.startTime, x.endTime))
       || (moment(x.startTime).isBetween(startDateTime, endDateTime) || moment(x.endTime).isBetween(startDateTime, endDateTime))));
 
-      console.log(roomList);
     if (roomList.length) return false;
 
     return true;
@@ -136,6 +154,7 @@ export class MainService {
     };
 
     this.list.splice(i, 0, formatedData);
+    this.setLocalStorage('list', this.list);
     return true;    
   }
 }
