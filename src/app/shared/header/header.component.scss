@@ -1,0 +1,30 @@
+.nav-item {
+  &>.nav-link {
+   padding-left: 1rem;
+   padding-right: 1rem;
+   text-transform: capitalize;
+   color: #fff;
+
+   &:hover {
+    font-weight: 700;
+    }
+  }
+
+  .active {
+   font-weight: 700;
+  }
+}
+
+.navbar-brand {
+  font-weight: 700;
+}
+
+.navbar-text, .navbar-brand{
+  color: #fff;
+ }
+
+@media only screen  and (min-width: 992px) {
+  .navbar .btn {
+    display: none;
+  }
+}

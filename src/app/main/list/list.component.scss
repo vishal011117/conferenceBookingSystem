@@ -1,0 +1,44 @@
+form {
+  .form-group {
+    order: 1;
+  }
+}
+
+.btn-sm {
+  &.btn-primary {
+    font-size: 1rem;
+  }
+}
+
+.card {
+  cursor       : pointer;
+  max-width    : 540px;
+  border       : 1px solid rgba(0, 0, 0, 0.2);
+
+  .card-img {
+    max-width         : 115px;
+    border-radius     : 50%;
+    box-shadow        : 0 0 2px rgba(0, 0, 0, 0.5);
+    -webkit-transition: all 0.5s ease-in-out;
+    transition        : all 0.5s ease-in-out;
+  }
+
+  .card-text {
+    height            : 75px;
+    overflow          : hidden;
+    text-overflow     : ellipsis;
+    display           : -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+
+  &:hover {
+    transition: all 0.2s ease-in-out;
+    transform : scale(1.03);
+
+    .details {
+      transition : all 0.5s ease-in-out;
+      text-shadow: 1px 1px darken(rgba(235, 237, 189, 1), 10%);
+    }
+  }
+}

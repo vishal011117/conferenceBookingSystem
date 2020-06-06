@@ -1,0 +1,29 @@
+$light-color: #c1c1c1;
+
+.light-border {
+  border-color: $light-color !important;
+}
+
+.tracker-page {
+  .font-small {
+    font-size: 12px;
+  }
+
+  ul {
+    list-style: none;
+  }
+
+  .tracker {
+    margin-bottom: 0;
+
+    &>li {
+      border-bottom: 1px solid $light-color;
+      border-right: 1px solid $light-color;
+      height: 40px;
+       
+      &:last-child {
+        border-bottom: 0 !important;
+      }
+    }
+  }
+}

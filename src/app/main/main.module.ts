@@ -4,19 +4,22 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
+import { MainRoutingModule } from './main-routing.module';
 import { MainComponent } from './main.component';
-import { LoginComponent } from './login/login.component';
 import { SharedModule } from '../shared/shared.module';
 import { ViewComponent } from './view/view.component';
+import { ListComponent } from './list/list.component';
+import { TrackComponent } from './track/track.component';
 
 @NgModule({
-  declarations: [MainComponent, LoginComponent, ViewComponent],
+  declarations: [MainComponent, ViewComponent, ListComponent, TrackComponent],
   imports: [
     CommonModule,
     SharedModule,
     ReactiveFormsModule,
     FormsModule,
-    NgbModule
+    NgbModule,
+    MainRoutingModule,
   ]
 })
 export class MainModule { }

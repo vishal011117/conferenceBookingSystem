@@ -8,7 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "deploy": "ng build --prod --base-href https://vishal011117.github.io/ConferenceBookingSystem/ && angular-cli-ghpages --branch gh-pages"
+    "deploy": "ng build --prod --output-path docs --base-href https://vishal011117.github.io/conferenceBookingSystem/"
   },
   "private": true,
   "dependencies": {

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MainService } from '../main.service';
+import { MainService } from '../main/main.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
@@ -36,9 +36,6 @@ export class LoginComponent implements OnInit {
     if (!this.loginStep) {
       this.mainService.newUser(data);
       this.toastr.success("You are successfully registerd");
-      this.form.reset();
-
-      return (this.loginStep = !this.loginStep); 
     }
 
     const isExistedUser = this.mainService.checkUser(data);

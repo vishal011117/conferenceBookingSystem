@@ -157,4 +157,9 @@ export class MainService {
     this.setLocalStorage('list', this.list);
     return true;    
   }
+
+  getRandomColor() {
+    const color = "hsl(" + Math.random() * 360 + ", 50%, 75%)";
+    return color;
+  }
 }

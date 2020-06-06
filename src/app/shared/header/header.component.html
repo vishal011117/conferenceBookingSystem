@@ -1,8 +1,27 @@
-<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary justify-content-between pl-4 pr-4">
+<nav class="navbar navbar-expand-md fixed-top bg-primary justify-content-between pl-4 pr-4">
   <a class="navbar-brand" href="#">Conference</a>
 
-  <button class="btn btn-outline-light" (click)="logout()"> 
-    <i class="fa fa-power-off"></i>
+  <button class="btn btn-primary" type="button" data-toggle="collapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" (click)="isShown = !isShown">
+    <i class="fa fa-bars"></i>
   </button>
 
+  <div class="collapse navbar-collapse" [ngClass]="{ 'show': isShown }">
+    <ul class="navbar-nav mr-auto text-primary" >
+      <li
+        class="nav-item mr-2"
+        *ngFor="let data of list"
+      >
+         <a
+           (click)="redirect(data)"
+           class="nav-link pointer pl-0"
+           [ngClass]="{'active': activeTab === data }"
+          > {{data}} </a>
+       </li>
+    </ul>
+    <span class="navbar-text">
+      <div class="pointer" (click)="logout()"> 
+        Logout <i class="fa fa-power-off"></i>
+      </div>
+    </span>
+  </div>
 </nav>

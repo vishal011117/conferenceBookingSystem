@@ -7,11 +7,33 @@ import { Router } from '@angular/router';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
+  list = ['list', 'tracker'];
+  isShown:boolean = false;
+  activeTab = '';
+
   constructor(
     public router: Router,
   ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    if (!this.router.url.split('/main/').length) return;
+
+    this.activeTab = this.router.url.split('/main/')[1];
+
+
+    this.router.events.subscribe((event: any) => {
+      if (!this.router.url.split('/main/').length) return;
+      
+      this.activeTab = event.url
+        ? event.url.split('/main/')[1]
+        : this.activeTab
+    });
+  }
+
+  redirect(name) {
+    this.isShown = !this.isShown;
+    this.router.navigateByUrl(`/main/${name}`);
+  } 
 
   logout() {
     localStorage.removeItem('user');
