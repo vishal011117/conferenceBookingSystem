@@ -46,8 +46,8 @@ export class MainService {
   }
 
   checkUser(data) {
-    const { name, type } = data;
-    const existedUser = this.users.find(x => (x.name === name && x.type === type));
+    const { name, type, password } = data;
+    const existedUser = this.users.find(x => (x.name === name && x.type === type && x.password === password));
 
     if (existedUser) {
       this.setLocalStorage('user', existedUser);

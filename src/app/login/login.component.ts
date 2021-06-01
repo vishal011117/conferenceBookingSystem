@@ -23,6 +23,7 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
     this.form = this.formBuilder.group({
       name: ['', Validators.required],
+      password: ['', Validators.required],
       type: ['admin'],
     })
   }
@@ -30,6 +31,7 @@ export class LoginComponent implements OnInit {
   submit() {
     const data = {
       name: this.form.get('name').value,
+      password: this.form.get('password').value,
       type: this.form.get('type').value,
     };
 
@@ -44,7 +46,7 @@ export class LoginComponent implements OnInit {
       this.router.navigate(['main'])
       this.form.reset();
     } else {
-      this.toastr.error("You are unregister user");
+      this.toastr.error("You are putting something wrong");
     }
   }
 }
